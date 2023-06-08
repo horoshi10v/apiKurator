@@ -17,6 +17,9 @@ func main() {
 
 	config.GoogleConfig()
 	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://localhost:3000", // Replace with the actual origin of your React client
+		AllowMethods:     "GET,POST,PUT,DELETE",
+		AllowHeaders:     "Content-Type",
 		AllowCredentials: true,
 	}))
 	routes.Setup(app)

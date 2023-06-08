@@ -5,6 +5,8 @@ import (
 	"apiKurator/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"os"
 )
 
@@ -25,7 +27,34 @@ func User(c *fiber.Ctx) error {
 	var user models.User
 
 	database.DB.Where("id=?", claims.Issuer).First(&user)
+
 	return c.JSON(user)
+}
+
+func AddUser(c *fiber.Ctx) error {
+	var data map[string]string
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+	UserId := uuid.New().String()
+	var user = models.User{
+		ID:          UserId,
+		Name:        data["name"],
+		Email:       data["email"],
+		Picture:     data["picture"],
+		Role:        data["role"],
+		Department:  data["department"],
+		Interests:   data["interests"],
+		Description: data["description"],
+		Phone:       data["phone"],
+	}
+
+	database.DB.Create(&user)
+
+	return c.JSON(fiber.Map{
+		"message": "User created successfully",
+		"user":    user,
+	})
 }
 
 func GetUsers(c *fiber.Ctx) error {
@@ -48,19 +77,25 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 func GetUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+	userID := c.Params("id")
 	var user models.User
-	result := database.DB.First(&user, "id = ?", id)
-	if result.RowsAffected == 0 {
-		return c.SendStatus(fiber.StatusNotFound)
+	if err := database.DB.Find(&user, "id = ?", userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"message": "User not found",
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
 	}
-	return c.Status(fiber.StatusOK).JSON(user)
+	return c.JSON(user)
 }
 
 func UpdateUser(c *fiber.Ctx) error {
 	userID := c.Params("id")
 	var user models.User
-	if err := database.DB.First(&user, userID).Error; err != nil {
+	if err := database.DB.Find(&user, "id = ?", userID).Error; err != nil {
 		// Handle the error, e.g., user not found
 		return c.Status(fiber.StatusNotFound).SendString("User not found")
 	}
@@ -80,27 +115,36 @@ func UpdateUser(c *fiber.Ctx) error {
 	if val, ok := data["description"].(string); ok {
 		user.Description = val
 	}
+	if val, ok := data["phone"].(string); ok {
+		user.Phone = val
+	}
+	if val, ok := data["name"].(string); ok {
+		user.Name = val
+	}
+	if val, ok := data["picture"].(string); ok {
+		user.Picture = val
+	}
+	if val, ok := data["email"].(string); ok {
+		user.Email = val
+	}
+
 	database.DB.Save(&user)
 	return c.Status(fiber.StatusOK).JSON(user)
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	userID := c.Params("id")
-
-	// Check if the user exists
+	db := database.DB
 	var user models.User
-	result := database.DB.First(&user, userID)
-	if result.Error != nil {
-		c.Status(fiber.StatusNotFound)
-		return c.JSON(fiber.Map{
-			"message": "user not found",
-		})
+	// get id params
+	id := c.Params("id")
+	// find single user in the database by id
+	db.Find(&user, "id = ?", id)
+	if user.ID == "" {
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "User not found", "data": nil})
 	}
-
-	// Delete the user
-	database.DB.Delete(&user)
-
-	return c.JSON(fiber.Map{
-		"message": "user deleted successfully",
-	})
+	err := db.Delete(&user, "id = ?", id).Error
+	if err != nil {
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "Failed to delete user", "data": nil})
+	}
+	return c.Status(200).JSON(fiber.Map{"status": "success", "message": "User deleted"})
 }

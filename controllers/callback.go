@@ -35,16 +35,7 @@ func GoogleCallback(c *fiber.Ctx) error {
 
 	var user models.User
 	err = json.NewDecoder(resp.Body).Decode(&user)
-	// Set a cookie
-	//c.Cookie(&fiber.Cookie{
-	//	Name:     "MyCookie",
-	//	Value:    fmt.Sprintf("%d", time.Now().Unix()),
-	//	HTTPOnly: true,
-	//	Expires:  time.Now().Add(time.Hour * 1),
-	//})
-	//database.DB.Create(&user)
-	//
-	//return c.JSON(user)
+
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		Issuer:    string(user.ID),
 		ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
@@ -65,11 +56,10 @@ func GoogleCallback(c *fiber.Ctx) error {
 		Expires:  time.Now().Add(time.Hour * 1),
 		HTTPOnly: true,
 	}
+
 	c.Cookie(&cookie)
 
 	database.DB.Create(&user)
 
-	return c.JSON(fiber.Map{
-		"massage": "success",
-	})
+	return c.Redirect("http://localhost:3000/user")
 }
