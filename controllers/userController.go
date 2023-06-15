@@ -43,6 +43,7 @@ func AddUser(c *fiber.Ctx) error {
 		Email:       data["email"],
 		Picture:     data["picture"],
 		Role:        data["role"],
+		Stage:       data["stage"],
 		Department:  data["department"],
 		Interests:   data["interests"],
 		Description: data["description"],
@@ -61,14 +62,12 @@ func GetUsers(c *fiber.Ctx) error {
 	role := c.Query("role") // Retrieve the role from the query parameter
 
 	var users []models.User
-
+	//users?role=
 	switch role {
+	case "curator":
+		database.DB.Where("role = ?", "куратор").Find(&users)
 	case "student":
-		database.DB.Where("role = ?", "student").Find(&users)
-	case "teacher":
-		database.DB.Where("role = ?", "teacher").Find(&users)
-	case "admin":
-		database.DB.Where("role = ?", "admin").Find(&users)
+		database.DB.Where("role = ?", "студент").Find(&users)
 	default:
 		database.DB.Find(&users)
 	}
@@ -102,6 +101,9 @@ func UpdateUser(c *fiber.Ctx) error {
 	var data map[string]interface{}
 	if err := c.BodyParser(&data); err != nil {
 		return err
+	}
+	if val, ok := data["stage"].(string); ok {
+		user.Stage = val
 	}
 	if val, ok := data["role"].(string); ok {
 		user.Role = val
