@@ -27,6 +27,6 @@ func GoogleLogout(c *fiber.Ctx) error {
 	c.Cookie(&cookie)
 
 	return c.JSON(fiber.Map{
-		"massage": "logout success",
+		"message": "logout success",
 	})
 }

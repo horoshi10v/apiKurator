@@ -59,7 +59,7 @@ func AddUser(c *fiber.Ctx) error {
 }
 
 func GetUsers(c *fiber.Ctx) error {
-	role := c.Query("role") // Retrieve the role from the query parameter
+	role := c.Query("role")
 
 	var users []models.User
 	//users?role=

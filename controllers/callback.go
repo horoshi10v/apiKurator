@@ -5,6 +5,7 @@ import (
 	"apiKurator/database"
 	"apiKurator/models"
 	"context"
+	"os"
 
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
@@ -14,6 +15,7 @@ import (
 )
 
 func GoogleCallback(c *fiber.Ctx) error {
+	var clientPort = os.Getenv("CLIENT_PORT")
 	state := c.Query("state")
 	if state != "randomstate" {
 		return c.SendString("States don't Match!!")
@@ -61,5 +63,5 @@ func GoogleCallback(c *fiber.Ctx) error {
 
 	database.DB.Create(&user)
 
-	return c.Redirect("http://localhost:3000/user")
+	return c.Redirect(clientPort + "/user")
 }
