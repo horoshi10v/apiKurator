@@ -9,18 +9,14 @@ import (
 func GoogleLogin(c *fiber.Ctx) error {
 	url := config.AppConfig.GoogleLoginConfig.AuthCodeURL("randomstate")
 	c.Status(fiber.StatusSeeOther)
-	c.Redirect(url)
+	err := c.Redirect(url)
+	if err != nil {
+		return err
+	}
 	return c.JSON(url)
 }
 
 func GoogleLogout(c *fiber.Ctx) error {
-	//c.Cookie(&fiber.Cookie{
-	//	Name:     "MyCookie",
-	//	HTTPOnly: true,
-	//	Expires:  time.Now().Add(-(time.Hour * 1000)),
-	//})
-	//// Redirect the user to the Google logout URL
-	//return c.Redirect("https://accounts.google.com/logout")
 	cookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    "",
