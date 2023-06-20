@@ -72,7 +72,7 @@ The following libraries were used in this project:
 - [Fiber](https://github.com/gofiber/fiber): HTTP web framework
 - [GORM](https://gorm.io/): ORM library for interacting with the database
 - [MySQL](https://github.com/go-sql-driver/mysql): MySQL driver for Go
-- [Google OAuth](https://github.com/googleapis/google-api-go-client): Google OAuth client library for Go
+- [Google OAuth](https://pkg.go.dev/golang.org/x/oauth2/google): Google OAuth client library for Go
 
 ## Contributing
 
