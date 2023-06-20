@@ -1,7 +1,7 @@
 # apiKurator
 ## Go REST API Backend with GORM, MySQL, and OAuth Google
 
-This repository contains a Go-based REST API backend application that utilizes the GORM library for interacting with a MySQL database and OAuth Google for authentication. It provides a starting point for building a robust backend server for your web or mobile applications.
+This repository contains a Go-based REST API server application that uses the GORM library to interact with a MySQL database and Google's OAuth 2.0 for authentication. The application also has a [client part](https://github.com/horoshi10v/ekurator-client/tree/master), together with which they form a service for searching and placing profiles for joint work on university projects.
 
 ## Prerequisites
 
