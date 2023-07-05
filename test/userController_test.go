@@ -17,17 +17,11 @@ func TestAddUser(t *testing.T) {
 		payload string
 		wantErr bool
 	}{
-		//{
-		//	name:    "Valid user data",
-		//	payload: `{"name":"John Doe","email":"john@example.com"}`,
-		//	wantErr: false,
-		//},
 		{
 			name:    "Invalid user data",
 			payload: `{"name":"","email":"john@example.com"}`,
 			wantErr: true,
 		},
-		// Add more test cases as needed
 	}
 
 	for _, tt := range tests {
@@ -56,17 +50,11 @@ func TestDeleteUser(t *testing.T) {
 		userID  string
 		wantErr bool
 	}{
-		//{
-		//	name:    "Existing user ID",
-		//	userID:  "existing-user-id",
-		//	wantErr: false,
-		//},
 		{
 			name:    "Nonexistent user ID",
 			userID:  "nonexistent-user-id",
 			wantErr: true,
 		},
-		// Add more test cases as needed
 	}
 
 	for _, tt := range tests {
@@ -93,17 +81,11 @@ func TestGetUser(t *testing.T) {
 		userID  string
 		wantErr bool
 	}{
-		//{
-		//	name:    "Existing user ID",
-		//	userID:  "existing-user-id",
-		//	wantErr: false,
-		//},
 		{
 			name:    "Nonexistent user ID",
 			userID:  "nonexistent-user-id",
 			wantErr: true,
 		},
-		// Add more test cases as needed
 	}
 
 	for _, tt := range tests {
@@ -133,7 +115,6 @@ func TestGetUsers(t *testing.T) {
 			name:    "Valid request",
 			wantErr: false,
 		},
-		// Add more test cases as needed
 	}
 
 	for _, tt := range tests {
@@ -163,7 +144,6 @@ func TestGoogleCallback(t *testing.T) {
 			name:    "Valid callback",
 			wantErr: false,
 		},
-		// Add more test cases as needed
 	}
 
 	for _, tt := range tests {
@@ -181,35 +161,34 @@ func TestGoogleCallback(t *testing.T) {
 	}
 }
 
-//	func TestGoogleLogin(t *testing.T) {
-//		app := fiber.New()
-//		app.Get("/auth/google/login", controllers.GoogleLogin)
-//
-//		tests := []struct {
-//			name    string
-//			wantErr bool
-//		}{
-//			//{
-//			//	name:    "Valid login",
-//			//	wantErr: false,
-//			//},
-//			// Add more test cases as needed
-//		}
-//
-//		for _, tt := range tests {
-//			t.Run(tt.name, func(t *testing.T) {
-//				req := httptest.NewRequest(http.MethodGet, "/auth/google/login", nil)
-//
-//				resp, _ := app.Test(req)
-//				if resp.StatusCode != fiber.StatusOK && !tt.wantErr {
-//					t.Errorf("Expected status code %d but got %d", fiber.StatusOK, resp.StatusCode)
-//				}
-//				if resp.StatusCode == fiber.StatusOK && tt.wantErr {
-//					t.Errorf("Expected an error but got status code %d", resp.StatusCode)
-//				}
-//			})
-//		}
-//	}
+func TestGoogleLogin(t *testing.T) {
+	app := fiber.New()
+	app.Get("/auth/google/login", controllers.GoogleLogin)
+
+	tests := []struct {
+		name    string
+		wantErr bool
+	}{
+		{
+			name:    "Valid login",
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, "/auth/google/login", nil)
+
+			resp, _ := app.Test(req)
+			if resp.StatusCode != http.StatusFound && !tt.wantErr {
+				t.Errorf("Expected status code %d but got %d", http.StatusFound, resp.StatusCode)
+			}
+			if resp.StatusCode == http.StatusFound && tt.wantErr {
+				t.Errorf("Expected an error but got status code %d", resp.StatusCode)
+			}
+		})
+	}
+}
 func TestGoogleLogout(t *testing.T) {
 	app := fiber.New()
 	app.Get("/auth/google/logout", controllers.GoogleLogout)
@@ -222,7 +201,6 @@ func TestGoogleLogout(t *testing.T) {
 			name:    "Valid logout",
 			wantErr: false,
 		},
-		// Add more test cases as needed
 	}
 
 	for _, tt := range tests {
@@ -250,12 +228,6 @@ func TestUpdateUser(t *testing.T) {
 		payload string
 		wantErr bool
 	}{
-		//{
-		//	name:    "Existing user ID with valid payload",
-		//	userID:  "existing-user-id",
-		//	payload: `{"name":"John Doe","email":"john@example.com"}`,
-		//	wantErr: false,
-		//},
 		{
 			name:    "Existing user ID with invalid payload",
 			userID:  "existing-user-id",
@@ -268,14 +240,12 @@ func TestUpdateUser(t *testing.T) {
 			payload: `{"name":"John Doe","email":"john@example.com"}`,
 			wantErr: true,
 		},
-		// Add more test cases as needed
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodPut, "/user/"+tt.userID, nil)
 			req.Header.Set("Content-Type", "application/json")
-			//req.SetBody([]byte(tt.payload))
 
 			resp, _ := app.Test(req)
 			if resp.StatusCode != fiber.StatusOK && !tt.wantErr {
@@ -287,33 +257,3 @@ func TestUpdateUser(t *testing.T) {
 		})
 	}
 }
-
-//func TestUser(t *testing.T) {
-//	app := fiber.New()
-//	app.Get("/user", controllers.User)
-//
-//	tests := []struct {
-//		name    string
-//		wantErr bool
-//	}{
-//		{
-//			name:    "Valid request",
-//			wantErr: false,
-//		},
-//		// Add more test cases as needed
-//	}
-//
-//	for _, tt := range tests {
-//		t.Run(tt.name, func(t *testing.T) {
-//			req := httptest.NewRequest(http.MethodGet, "/user", nil)
-//
-//			resp, _ := app.Test(req)
-//			if resp.StatusCode != fiber.StatusOK && !tt.wantErr {
-//				t.Errorf("Expected status code %d but got %d", fiber.StatusOK, resp.StatusCode)
-//			}
-//			if resp.StatusCode == fiber.StatusOK && tt.wantErr {
-//				t.Errorf("Expected an error but got status code %d", resp.StatusCode)
-//			}
-//		})
-//	}
-//}
