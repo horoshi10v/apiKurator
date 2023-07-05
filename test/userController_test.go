@@ -10,7 +10,7 @@ import (
 
 func TestAddUser(t *testing.T) {
 	app := fiber.New()
-	app.Post("/user", controllers.AddUser)
+	app.Post("/user", controllers.UserControllerImpl{}.AddUser)
 
 	tests := []struct {
 		name    string
@@ -43,7 +43,7 @@ func TestAddUser(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	app := fiber.New()
-	app.Delete("/user/:id", controllers.DeleteUser)
+	app.Delete("/user/:id", controllers.UserControllerImpl{}.DeleteUser)
 
 	tests := []struct {
 		name    string
@@ -74,7 +74,7 @@ func TestDeleteUser(t *testing.T) {
 
 func TestGetUser(t *testing.T) {
 	app := fiber.New()
-	app.Get("/user/:id", controllers.GetUser)
+	app.Get("/user/:id", controllers.UserControllerImpl{}.GetUser)
 
 	tests := []struct {
 		name    string
@@ -105,7 +105,7 @@ func TestGetUser(t *testing.T) {
 
 func TestGetUsers(t *testing.T) {
 	app := fiber.New()
-	app.Get("/users", controllers.GetUsers)
+	app.Get("/users", controllers.UserControllerImpl{}.GetUsers)
 
 	tests := []struct {
 		name    string
@@ -134,7 +134,7 @@ func TestGetUsers(t *testing.T) {
 
 func TestGoogleCallback(t *testing.T) {
 	app := fiber.New()
-	app.Get("/auth/google/callback", controllers.GoogleCallback)
+	app.Get("/auth/google/callback", controllers.UserControllerImpl{}.GoogleCallback)
 
 	tests := []struct {
 		name    string
@@ -163,7 +163,7 @@ func TestGoogleCallback(t *testing.T) {
 
 func TestGoogleLogin(t *testing.T) {
 	app := fiber.New()
-	app.Get("/auth/google/login", controllers.GoogleLogin)
+	app.Get("/auth/google/login", controllers.UserControllerImpl{}.GoogleLogin)
 
 	tests := []struct {
 		name    string
@@ -191,7 +191,7 @@ func TestGoogleLogin(t *testing.T) {
 }
 func TestGoogleLogout(t *testing.T) {
 	app := fiber.New()
-	app.Get("/auth/google/logout", controllers.GoogleLogout)
+	app.Get("/auth/google/logout", controllers.UserControllerImpl{}.GoogleLogout)
 
 	tests := []struct {
 		name    string
@@ -220,7 +220,7 @@ func TestGoogleLogout(t *testing.T) {
 
 func TestUpdateUser(t *testing.T) {
 	app := fiber.New()
-	app.Put("/user/:id", controllers.UpdateUser)
+	app.Put("/user/:id", controllers.UserControllerImpl{}.UpdateUser)
 
 	tests := []struct {
 		name    string

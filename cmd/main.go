@@ -2,7 +2,6 @@ package main
 
 import (
 	"apiKurator/config"
-	"apiKurator/controllers"
 	"apiKurator/database"
 	"apiKurator/routes"
 	"github.com/gofiber/fiber/v2"
@@ -29,8 +28,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	userController := &controllers.UserControllerImpl{}
-	routes.Setup(app, userController)
+	routes.Setup(app)
 
 	err := app.Listen(serverPort)
 	if err != nil {

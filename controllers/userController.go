@@ -19,6 +19,9 @@ type UserController interface {
 	GetUser(c *fiber.Ctx) error
 	UpdateUser(c *fiber.Ctx) error
 	DeleteUser(c *fiber.Ctx) error
+	GoogleLogin(c *fiber.Ctx) error
+	GoogleLogout(c *fiber.Ctx) error
+	GoogleCallback(c *fiber.Ctx) error
 }
 
 type UserControllerImpl struct{}

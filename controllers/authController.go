@@ -5,16 +5,40 @@ import (
 	"apiKurator/database"
 	"apiKurator/models"
 	"context"
-	"os"
-
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"net/http"
+	"os"
 	"time"
 )
 
-func GoogleCallback(c *fiber.Ctx) error {
+func (u *UserControllerImpl) GoogleLogin(c *fiber.Ctx) error {
+	url := config.AppConfig.GoogleLoginConfig.AuthCodeURL("randomstate")
+	c.Status(fiber.StatusSeeOther)
+	err := c.Redirect(url)
+	if err != nil {
+		return err
+	}
+	return c.JSON(url)
+}
+
+func (u *UserControllerImpl) GoogleLogout(c *fiber.Ctx) error {
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	return c.JSON(fiber.Map{
+		"message": "logout success",
+	})
+}
+
+func (u *UserControllerImpl) GoogleCallback(c *fiber.Ctx) error {
 	var clientPort = os.Getenv("CLIENT_PORT")
 	state := c.Query("state")
 	if state != "randomstate" {
