@@ -12,7 +12,18 @@ import (
 
 var SecretKey = os.Getenv("SECRET_KEY")
 
-func User(c *fiber.Ctx) error {
+type UserController interface {
+	User(c *fiber.Ctx) error
+	AddUser(c *fiber.Ctx) error
+	GetUsers(c *fiber.Ctx) error
+	GetUser(c *fiber.Ctx) error
+	UpdateUser(c *fiber.Ctx) error
+	DeleteUser(c *fiber.Ctx) error
+}
+
+type UserControllerImpl struct{}
+
+func (u *UserControllerImpl) User(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
 	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SecretKey), nil
@@ -31,7 +42,7 @@ func User(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
-func AddUser(c *fiber.Ctx) error {
+func (u *UserControllerImpl) AddUser(c *fiber.Ctx) error {
 	var data map[string]string
 	if err := c.BodyParser(&data); err != nil {
 		return err
@@ -58,7 +69,7 @@ func AddUser(c *fiber.Ctx) error {
 	})
 }
 
-func GetUsers(c *fiber.Ctx) error {
+func (u *UserControllerImpl) GetUsers(c *fiber.Ctx) error {
 	role := c.Query("role")
 
 	var users []models.User
@@ -75,7 +86,7 @@ func GetUsers(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(users)
 }
 
-func GetUser(c *fiber.Ctx) error {
+func (u *UserControllerImpl) GetUser(c *fiber.Ctx) error {
 	userID := c.Params("id")
 	var user models.User
 	if err := database.DB.Find(&user, "id = ?", userID).Error; err != nil {
@@ -91,7 +102,7 @@ func GetUser(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
-func UpdateUser(c *fiber.Ctx) error {
+func (u *UserControllerImpl) UpdateUser(c *fiber.Ctx) error {
 	userID := c.Params("id")
 	var user models.User
 	if err := database.DB.Find(&user, "id = ?", userID).Error; err != nil {
@@ -134,7 +145,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(user)
 }
 
-func DeleteUser(c *fiber.Ctx) error {
+func (u *UserControllerImpl) DeleteUser(c *fiber.Ctx) error {
 	db := database.DB
 	var user models.User
 	// get id params
